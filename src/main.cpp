@@ -1,7 +1,10 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "pico/stdlib.h"
+#include "sx1276.h"
 
+
+LoRa Lora = LoRa(spi0, 16, 19, 18, 17, 20, 21);
 
 void led_task(void*)
 {

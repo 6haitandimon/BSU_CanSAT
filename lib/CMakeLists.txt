@@ -1,0 +1,5 @@
+add_subdirectory(BME280)
+add_subdirectory(FatFs_SPI)
+add_subdirectory(ICM20948)
+add_subdirectory(loraPacket)
+add_subdirectory(SX1276)

@@ -1,4 +1,6 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.28)
+
+cmake_policy(SET CMP0076 NEW)
 
 set(ProjectName CanSAT)
 
@@ -18,5 +20,4 @@ set(CMAKE_C_STANDARD 11)
 pico_sdk_init()
 
 add_subdirectory(src)
-
-#add_subdirectory(lib)
+add_subdirectory(lib)
