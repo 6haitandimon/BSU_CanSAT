@@ -11,6 +11,7 @@ target_link_libraries(${ProjectName}
         pico_stdlib
         FreeRTOS-Kernel-Heap4
         SX1276
+        GPS
     )
 
 pico_add_extra_outputs(${ProjectName})

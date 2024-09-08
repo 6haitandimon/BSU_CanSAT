@@ -1,10 +1,12 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "pico/stdlib.h"
-#include "sx1276.h"
+#include <cstdio>
+
+#include "m100Mini.h"
 
 
-LoRa Lora = LoRa(spi0, 16, 19, 18, 17, 20, 21);
+GPS::M100Mini m100Mini = GPS::M100Mini(uart1, 8, 9, 115200);
 
 void led_task(void*)
 {
@@ -19,11 +21,26 @@ void led_task(void*)
     }
 }
 
+void gps_task(void*){
+  GPS::NAV_POSLLH navData;
+  while(true){
+    if(m100Mini.GetGPS(&navData)){
+      printf("Lat: %ld, Lon: %ld\n", navData.lat, navData.lon);
+    }else{
+      printf("wait gps\n");
+    }
+    vTaskDelay(50 / portTICK_PERIOD_MS);
+  }
+}
+
 int main()
 {
     stdio_init_all();
 
-    xTaskCreate(led_task, "LED_Task", 256, NULL, 1, NULL);
+    m100Mini.m100Mini_Init();
+
+    xTaskCreate(gps_task, "GPS_task", 256, NULL, 1, NULL);
+    xTaskCreate(led_task, "LED_task", 256, NULL, 2, NULL);
     vTaskStartScheduler();
 
     while(true){};
