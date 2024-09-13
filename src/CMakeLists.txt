@@ -12,6 +12,9 @@ target_link_libraries(${ProjectName}
         FreeRTOS-Kernel-Heap4
         SX1276
         GPS
+        BME280
+        ICM20948
+        Telemetry
     )
 
 pico_add_extra_outputs(${ProjectName})

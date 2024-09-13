@@ -11,9 +11,6 @@ target_link_libraries(ICM20948
         INTERFACE
         pico_stdlib
         hardware_i2c
-        ICM20948
-        GPS
-        BME280
-        hardware_watchdog
+        FreeRTOS-Kernel-Heap4
 )
 
