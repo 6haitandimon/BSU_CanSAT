@@ -15,6 +15,7 @@ target_link_libraries(${ProjectName}
         BME280
         ICM20948
         Telemetry
+        loraPacket
     )
 
 pico_add_extra_outputs(${ProjectName})
