@@ -10,6 +10,8 @@
 #include "sx1276.h"
 #include "Telemetry.h"
 
+//main sat
+
 
 Telemetry telemetry;
 
