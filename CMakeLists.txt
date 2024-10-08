@@ -22,5 +22,5 @@ pico_sdk_init()
 add_subdirectory(src)
 add_subdirectory(lib)
 
-pico_enable_stdio_usb(CanSAT 1)
+pico_enable_stdio_usb(CanSAT 0)
 pico_enable_stdio_uart(CanSAT 0)

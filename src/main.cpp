@@ -64,7 +64,7 @@ void lora_task(void*){
 
     lora.transmitPacket(&packet);
 
-    printf("lora send!\n");
+//    printf("lora send!\n");
 
     vTaskDelay(12 / portTICK_PERIOD_MS);
   }
