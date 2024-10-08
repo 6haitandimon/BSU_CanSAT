@@ -16,6 +16,7 @@ target_link_libraries(${ProjectName}
         ICM20948
         Telemetry
         loraPacket
+        PCF8574
     )
 
 pico_add_extra_outputs(${ProjectName})

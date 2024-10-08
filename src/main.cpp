@@ -1,7 +1,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "pico/stdlib.h"
-#include <cstdio>
+//#include <cstdio>
 
 #include "m100Mini.h"
 #include "BME280.h"
@@ -9,6 +9,7 @@
 #include "loraPaket.h"
 #include "sx1276.h"
 #include "Telemetry.h"
+#include "PCF8574.h"
 
 //main sat
 
@@ -18,9 +19,30 @@ Telemetry telemetry;
 
 ICM::ICM20948 icm20948 = ICM::ICM20948(i2c0, 4, 5, 0x68);
 GPS::M100Mini m100Mini = GPS::M100Mini(uart1, 8, 9, 115200);
+PCF8574::PCF8574 pcf8574 = PCF8574::PCF8574(i2c1, 6, 7);
 LoRa lora = LoRa(spi0, 16, 19, 18, 17, 20, 21);
 
+//local function (deprecate)
+bool doorCheck(){
+  if(pcf8574.read() & 0x04)
+    return true;
+  return false;
+}
 
+void undocking(){
+  pcf8574.write(0x09);
+  vTaskDelay(200);
+  pcf8574.write(0x00);
+}
+
+//bullShit
+void Start(){
+  uint8_t cmdStart = 0x02;
+  auto packeg = LoRaPacket(&cmdStart, sizeof(cmdStart));
+  lora.transmitPacket(&packeg);
+}
+
+//tasks
 void led_task(void*)
 {
     const uint LED_PIN = PICO_DEFAULT_LED_PIN;
@@ -58,18 +80,32 @@ void icm_task(void*){
   }
 }
 
+
+
 void lora_task(void*){
   while(true){
-    LoRaPacket packet = LoRaPacket(reinterpret_cast<unsigned char *>(&telemetry), sizeof(struct Telemetry));
 
-    lora.transmitPacket(&packet);
-
-//    printf("lora send!\n");
-
+    if(lora.checkSend()){
+      LoRaPacket packet = LoRaPacket(reinterpret_cast<unsigned char *>(&telemetry), sizeof(struct Telemetry));
+      lora.transmitPacket(&packet);
+    }
     vTaskDelay(12 / portTICK_PERIOD_MS);
   }
 }
 
+
+void door_check(void*){
+  while (true){
+    if(doorCheck()){
+      undocking();
+      vTaskDelay(100);
+      Start();
+      vTaskDelete(NULL);
+//      return;
+    }
+    vTaskDelay(50 / portTICK_PERIOD_MS);
+  }
+}
 
 int main()
 {
@@ -99,6 +135,7 @@ int main()
     xTaskCreate(led_task, "LED_task", 256, NULL, 1, NULL);
 //    xTaskCreate(print_terminal, "TerminalPC", 256, NULL, 1, NULL);
     xTaskCreate(lora_task, "LoRa_task", 256, NULL, 3, NULL);
+    xTaskCreate(door_check, "DoorCheck_task", 256, NULL, 3, NULL);
 
     vTaskStartScheduler();
 

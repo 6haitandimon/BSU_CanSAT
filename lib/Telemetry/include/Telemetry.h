@@ -1,1 +1,1 @@
-#ifndef CANSAT_TELEMETRY_H#define CANSAT_TELEMETRY_H#include "m100Mini.h"#include "ICM20948.h"#include "BME280.h"struct Telemetry{  GPS::NAV_POSLLH gpsData;  BME::BME280Data bme280Data;  ICM::ICM20948Data icm20948Data;}__packed;#endif
+#ifndef CANSAT_TELEMETRY_H#define CANSAT_TELEMETRY_H#include "m100Mini.h"#include "ICM20948.h"#include "BME280.h"struct Telemetry{  GPS::NAV_POSLLH gpsData;  BME::BME280Data bme280Data;  ICM::ICM20948Data icm20948Data;}__packed;#endif
